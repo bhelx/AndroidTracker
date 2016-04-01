@@ -1,5 +1,7 @@
 defmodule BhelxTrack.Location do
   use BhelxTrack.Web, :model
+  use Timex.Ecto.Timestamps
+  use Timex
 
   schema "locations" do
     field :lat, :float
@@ -21,4 +23,15 @@ defmodule BhelxTrack.Location do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  def formatted_time(location) do
+    {:ok, t} = location.inserted_at
+      |> Timex.datetime
+      |> Timezone.convert("America/Chicago")
+      |> Timex.format("%FT%T%:z", :strftime)
+
+    t
+  end
+
+
 end

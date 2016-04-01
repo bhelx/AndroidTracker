@@ -16,7 +16,7 @@ defmodule BhelxTrack.PageController do
     case Repo.insert(changeset) do
       {:ok, location} ->
         payload = %{
-          created: location.inserted_at,
+          created: Location.formatted_time(location),
           lat: location.lat,
           lon: location.lon
         }

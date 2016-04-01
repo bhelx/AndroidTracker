@@ -1,9 +1,11 @@
 <div id="map"></div>
 <script>
+<% loc = fetch_last_location %>
+
 window.lastKnownLocation = {
-  lat: <%= location.lat %>,
-  lon: <%= location.lon %>,
-  created: "<%= location.inserted_at %>"
+  lat: <%= loc.lat %>,
+  lon: <%= loc.lon %>,
+  created: "<%= formatted_time(loc) %>"
 }
 </script>
 
