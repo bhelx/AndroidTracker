@@ -20,15 +20,20 @@ function ready(fn) {
 let channel = socket.channel("locations:lobby", {})
 
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("ok", resp => { console.log("Joined channel", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on("new_location", payload => {
+  console.log(payload);
+
   if (window.map && payload.lat && payload.lon) {
     let loc = new L.LatLng(payload.lat, payload.lon);
 
     window.marker.setLatLng(loc);
     window.map.setView(loc);
+
+    window.popup.setLatLng(loc)
+      .setContent(`<p>Recorded at: ${payload.created}</p>`)
   }
 })
 
@@ -36,7 +41,7 @@ ready(() => {
   var map = L.map('map');
   window.map = map;
 
-  map.setView([29.951065, -90.071533], 14);
+  map.setView([window.lastKnownLocation.lat, window.lastKnownLocation.lon], 14);
 
   L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
       attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -46,10 +51,10 @@ ready(() => {
       ext: 'png'
   }).addTo(map);
 
-  let lastKnownLocation = [29.951065, -90.071533];
+  let loc = new L.LatLng(window.lastKnownLocation.lat, window.lastKnownLocation.lon);
 
   window.marker = new L.CircleMarker(
-    new L.LatLng(lastKnownLocation[0], lastKnownLocation[1]),
+    loc,
     {
       radius: 5,
       opacity: 1.0,
@@ -58,6 +63,13 @@ ready(() => {
   );
 
   window.marker.addTo(window.map);
+
+  let time = window.lastKnownLocation.created;
+
+  window.popup = L.popup()
+    .setLatLng(loc)
+    .setContent(`<p>Recorded at: ${time}</p>`)
+    .openOn(window.map);
 });
 
 
