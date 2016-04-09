@@ -32,6 +32,4 @@ defmodule BhelxTrack.Location do
 
     t
   end
-
-
 end

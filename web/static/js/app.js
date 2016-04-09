@@ -1,14 +1,11 @@
 import "phoenix_html"
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
-
 import socket from "./socket"
 import L from "leaflet"
 
-function ready(fn) {
+let map, marker, popup;
+
+let ready = (fn) => {
   if (document.readyState != 'loading'){
     fn();
   } else {
@@ -26,20 +23,19 @@ channel.join()
 channel.on("new_location", payload => {
   console.log(payload);
 
-  if (window.map && payload.lat && payload.lon) {
+  if (map && payload.lat && payload.lon) {
     let loc = new L.LatLng(payload.lat, payload.lon);
 
-    window.marker.setLatLng(loc);
-    window.map.setView(loc);
+    marker.setLatLng(loc);
+    map.setView(loc);
 
-    window.popup.setLatLng(loc)
+    popup.setLatLng(loc)
       .setContent(`<p>Recorded at: ${payload.created}</p>`)
   }
 })
 
 ready(() => {
-  var map = L.map('map');
-  window.map = map;
+  map = L.map('map');
 
   map.setView([window.lastKnownLocation.lat, window.lastKnownLocation.lon], 11);
 
@@ -53,7 +49,7 @@ ready(() => {
 
   let loc = new L.LatLng(window.lastKnownLocation.lat, window.lastKnownLocation.lon);
 
-  window.marker = new L.CircleMarker(
+  marker = new L.CircleMarker(
     loc,
     {
       radius: 5,
@@ -62,15 +58,14 @@ ready(() => {
     }
   );
 
-  window.marker.addTo(window.map);
+  marker.addTo(map);
 
   let time = window.lastKnownLocation.created;
 
-  window.popup = L.popup()
+  popup = L.popup()
     .setLatLng(loc)
     .setContent(`<p>Recorded at: ${time}</p>`)
-    .openOn(window.map);
+    .openOn(map);
 });
-
 
 
