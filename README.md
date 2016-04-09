@@ -39,19 +39,20 @@ Run `git push heroku master` to create a new release using these buildpacks.
  heroku addons:create heroku-postgresql:hobby-dev
 ```
 
-* Generate a secret and set the config variable
+* Generate a secret
 
 ```
 $ mix phoenix.gen.secret
 xvafzY4y01jYuzLm3ecJqo008dVnU3CN4f+MamNd1Zue4pXvfvUjbiXT8akaIF53
 ```
 
-* Paste that secret into a heroku:set command
+* set `SECRET_KEY_BASE` config variable
+
 ```
 heroku config:set SECRET_KEY_BASE="xvafzY4y01jYuzLm3ecJqo008dVnU3CN4f+MamNd1Zue4pXvfvUjbiXT8akaIF53"
 ```
 
-* Set your hostname to your heroku hostname
+* Set your hostname to the heroku hostname you created in step 1
 
 ```
 heroku config:set HOSTNAME="mysterious-meadow-6277"
